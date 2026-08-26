@@ -24,7 +24,21 @@
 
 ## Screenshots
 
-> Coming soon
+|                                        Light Mode                                        |                                       Dark Mode                                        |
+| :--------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: |
+| ![Home Light](https://kikukeii.github.io/BakungKron-extension/images/0.1-home-light.png) | ![Home Dark](https://kikukeii.github.io/BakungKron-extension/images/0.2-home-dark.png) |
+
+|                                       Theme Settings                                       |                                        Add Bookmark                                        |
+| :----------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------: |
+| ![Change Theme](https://kikukeii.github.io/BakungKron-extension/images/1-change-theme.png) | ![Add Bookmark](https://kikukeii.github.io/BakungKron-extension/images/2-add-bookmark.png) |
+
+|                                        Add Shortcut                                        |                                         Search Engines                                         |
+| :----------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------: |
+| ![Add Shortcut](https://kikukeii.github.io/BakungKron-extension/images/3-add-shortcut.png) | ![Search Engines](https://kikukeii.github.io/BakungKron-extension/images/4-search-engines.png) |
+
+|                                           Background (Dark)                                           |                                           Background (Light)                                            |
+| :---------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: |
+| ![Background Dark](https://kikukeii.github.io/BakungKron-extension/images/5-change-bg-image-dark.png) | ![Background Light](https://kikukeii.github.io/BakungKron-extension/images/5-change-bg-image-light.png) |
 
 ## Installation
 
@@ -35,6 +49,7 @@ Go to [Releases](https://github.com/kikukeii/BakungKron-extension/releases) and 
 ### Install (Extension Manager)
 
 #### Chrome / Edge / Brave
+
 1. Extract the zip file
 2. Open browser → `chrome://extensions/`
 3. Enable **Developer mode** (top right)
@@ -43,6 +58,7 @@ Go to [Releases](https://github.com/kikukeii/BakungKron-extension/releases) and 
 6. Open a new tab — BakungKron will appear
 
 #### Firefox
+
 1. Extract the zip file
 2. Open `about:debugging#/runtime/this-firefox`
 3. Click **Load Temporary Add-on**
@@ -52,6 +68,7 @@ Go to [Releases](https://github.com/kikukeii/BakungKron-extension/releases) and 
 > **Note:** Firefox temporary addons disappear after browser restart. For permanent install, submit to [Firefox Add-ons](https://addons.mozilla.org/developers/addon/submit/).
 
 #### Opera
+
 1. Extract the zip file
 2. Open `opera://extensions/`
 3. Enable **Developer mode**
@@ -61,16 +78,16 @@ Go to [Releases](https://github.com/kikukeii/BakungKron-extension/releases) and 
 
 ## Usage
 
-| Action | How |
-|--------|-----|
-| Search | Type in search bar, pick engine from dropdown |
-| Add Bookmark | Click `+` button in Bookmarks panel |
-| Create Folder | Click folder icon next to `+` |
-| Navigate Folder | Click a folder in the grid, use breadcrumb to go back |
-| Add Shortcut | Click `+` in Shortcuts panel |
-| Change Theme | Click sun/moon icon or open Settings |
-| Change Background | Click refresh icon or open Settings |
-| Clear History | Click trash icon in History panel |
+| Action            | How                                                   |
+| ----------------- | ----------------------------------------------------- |
+| Search            | Type in search bar, pick engine from dropdown         |
+| Add Bookmark      | Click `+` button in Bookmarks panel                   |
+| Create Folder     | Click folder icon next to `+`                         |
+| Navigate Folder   | Click a folder in the grid, use breadcrumb to go back |
+| Add Shortcut      | Click `+` in Shortcuts panel                          |
+| Change Theme      | Click sun/moon icon or open Settings                  |
+| Change Background | Click refresh icon or open Settings                   |
+| Clear History     | Click trash icon in History panel                     |
 
 ## Tech Stack
 
