@@ -355,9 +355,25 @@
     }
 
     grid.innerHTML = allDisplayItems.map((item, i) => {
+      const menuHTML = `<div class="bookmark-menu">
+        <button class="bookmark-menu-btn" data-idx="${i}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+        </button>
+        <div class="bookmark-dropdown">
+          <button class="bookmark-dropdown-item" data-action="edit" data-idx="${i}">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </button>
+          <button class="bookmark-dropdown-item bookmark-dropdown-danger" data-action="delete" data-idx="${i}">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Delete
+          </button>
+        </div>
+      </div>`;
+
       if (item._isFolder) {
         return `<div class="bookmark-item folder-item" data-idx="${i}" title="${item.name}">
-          <button class="bookmark-delete" data-idx="${i}">&times;</button>
+          ${menuHTML}
           <div class="bookmark-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
           </div>
@@ -366,10 +382,12 @@
       }
       const iconContent = item.icon && /\p{Emoji}/u.test(item.icon) && !item.icon.startsWith('http')
         ? item.icon
-        : getFavicon(item.url);
+        : item.icon && item.icon.startsWith('http')
+          ? `<img src="${item.icon}" alt="" onerror="this.src='${getFaviconUrl(item.url)}'">`
+          : getFavicon(item.url);
 
       return `<a class="bookmark-item" href="${item.url}" title="${item.name}" data-idx="${i}">
-        <button class="bookmark-delete" data-idx="${i}">&times;</button>
+        ${menuHTML}
         <div class="bookmark-icon">${iconContent}</div>
         <span class="bookmark-name">${item.name}</span>
       </a>`;
@@ -377,38 +395,67 @@
 
     grid.querySelectorAll('.bookmark-item.folder-item').forEach(el => {
       el.addEventListener('click', (e) => {
-        if (e.target.closest('.bookmark-delete')) return;
+        if (e.target.closest('.bookmark-menu')) return;
         const idx = parseInt(el.dataset.idx);
         const item = allDisplayItems[idx];
         navigateToFolder(item._folderId);
       });
     });
 
-    grid.querySelectorAll('.bookmark-delete').forEach(btn => {
+    grid.querySelectorAll('.bookmark-menu-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        const dropdown = btn.nextElementSibling;
+        document.querySelectorAll('.bookmark-dropdown.open').forEach(d => {
+          if (d !== dropdown) d.classList.remove('open');
+        });
+        dropdown.classList.toggle('open');
+      });
+    });
+
+    grid.querySelectorAll('.bookmark-dropdown-item').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const action = btn.dataset.action;
         const idx = parseInt(btn.dataset.idx);
         const item = allDisplayItems[idx];
+        btn.closest('.bookmark-dropdown').classList.remove('open');
 
-        if (item._isFolder && hasChromeApi()) {
-          chrome.bookmarks.removeTree(item._folderId, () => refreshBookmarks());
-          return;
+        if (action === 'delete') {
+          if (item._isFolder && hasChromeApi()) {
+            chrome.bookmarks.removeTree(item._folderId, () => refreshBookmarks());
+            return;
+          }
+          if (item._chromeId && hasChromeApi()) {
+            chrome.bookmarks.remove(item._chromeId, () => refreshBookmarks());
+            return;
+          }
+          const manualBookmarks = load(STORAGE_KEYS.bookmarks, []);
+          const manualIdx = manualBookmarks.findIndex(m => m.url === item.url && m.name === item.name);
+          if (manualIdx !== -1) {
+            manualBookmarks.splice(manualIdx, 1);
+            save(STORAGE_KEYS.bookmarks, manualBookmarks);
+            refreshBookmarks();
+          }
         }
 
-        if (item._chromeId && hasChromeApi()) {
-          chrome.bookmarks.remove(item._chromeId, () => refreshBookmarks());
-          return;
+        if (action === 'edit') {
+          document.getElementById('bookmarkModalTitle').textContent = 'Edit Bookmark';
+          document.getElementById('saveBookmarkBtn').textContent = 'Update';
+          document.getElementById('bookmarkName').value = item.name || '';
+          document.getElementById('bookmarkUrl').value = item.url || '';
+          document.getElementById('bookmarkIcon').value = (item.icon && item.icon.startsWith('http')) ? '' : (item.icon || '');
+          document.getElementById('bookmarkModal').classList.add('open');
+          document.getElementById('bookmarkModal').dataset.editIdx = idx;
+          document.getElementById('bookmarkModal').dataset.editChromeId = item._chromeId || '';
         }
-
-        const manualBookmarks = load(STORAGE_KEYS.bookmarks, []);
-        const manualIdx = manualBookmarks.findIndex(m => m.url === item.url && m.name === item.name);
-        if (manualIdx !== -1) {
-          manualBookmarks.splice(manualIdx, 1);
-          save(STORAGE_KEYS.bookmarks, manualBookmarks);
-        }
-        refreshBookmarks();
       });
+    });
+
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.bookmark-dropdown.open').forEach(d => d.classList.remove('open'));
     });
   }
 
@@ -543,6 +590,10 @@
     window.addEventListener('focus', () => refreshBookmarks());
 
     document.getElementById('addBookmarkBtn').addEventListener('click', () => {
+      document.getElementById('bookmarkModalTitle').textContent = 'Add Bookmark';
+      document.getElementById('saveBookmarkBtn').textContent = 'Save';
+      document.getElementById('bookmarkModal').dataset.editIdx = '';
+      document.getElementById('bookmarkModal').dataset.editChromeId = '';
       document.getElementById('bookmarkModal').classList.add('open');
       document.getElementById('bookmarkName').value = '';
       document.getElementById('bookmarkUrl').value = '';
@@ -553,22 +604,52 @@
     document.getElementById('saveBookmarkBtn').addEventListener('click', () => {
       const name = document.getElementById('bookmarkName').value.trim();
       let url = document.getElementById('bookmarkUrl').value.trim();
-      const icon = document.getElementById('bookmarkIcon').value.trim() || '';
+      let icon = document.getElementById('bookmarkIcon').value.trim() || '';
+      const modal = document.getElementById('bookmarkModal');
+      const editIdx = modal.dataset.editIdx;
+      const editChromeId = modal.dataset.editChromeId;
 
       if (!name || !url) return;
       if (!url.startsWith('http')) url = 'https://' + url;
 
-      if (hasChromeApi() && currentFolderId) {
-        chrome.bookmarks.create({ parentId: currentFolderId, title: name, url }, () => {
-          refreshBookmarks();
-        });
-      } else {
-        const manualBookmarks = load(STORAGE_KEYS.bookmarks, []);
-        manualBookmarks.push({ name, url, icon });
-        save(STORAGE_KEYS.bookmarks, manualBookmarks);
-        refreshBookmarks();
+      if (!icon) {
+        try {
+          const hostname = new URL(url).hostname;
+          icon = `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
+        } catch {}
       }
-      document.getElementById('bookmarkModal').classList.remove('open');
+
+      if (editIdx !== '' && editIdx !== undefined) {
+        const idx = parseInt(editIdx);
+        const item = allDisplayItems[idx];
+
+        if (item._chromeId && hasChromeApi()) {
+          chrome.bookmarks.update(item._chromeId, { title: name, url }, () => refreshBookmarks());
+        } else {
+          const manualBookmarks = load(STORAGE_KEYS.bookmarks, []);
+          const manualIdx = manualBookmarks.findIndex(m => m.url === item.url && m.name === item.name);
+          if (manualIdx !== -1) {
+            manualBookmarks[manualIdx] = { name, url, icon };
+            save(STORAGE_KEYS.bookmarks, manualBookmarks);
+            refreshBookmarks();
+          }
+        }
+      } else {
+        if (hasChromeApi() && currentFolderId) {
+          chrome.bookmarks.create({ parentId: currentFolderId, title: name, url }, () => {
+            refreshBookmarks();
+          });
+        } else {
+          const manualBookmarks = load(STORAGE_KEYS.bookmarks, []);
+          manualBookmarks.push({ name, url, icon });
+          save(STORAGE_KEYS.bookmarks, manualBookmarks);
+          refreshBookmarks();
+        }
+      }
+
+      modal.dataset.editIdx = '';
+      modal.dataset.editChromeId = '';
+      modal.classList.remove('open');
     });
 
     document.getElementById('addFolderBtn').addEventListener('click', () => {

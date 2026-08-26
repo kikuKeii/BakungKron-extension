@@ -610,26 +610,88 @@ body {
   max-width: 100%;
 }
 
-.bookmark-delete {
+.bookmark-menu {
   position: absolute;
   top: 4px;
   right: 4px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: none;
-  background: var(--danger);
-  color: white;
-  font-size: 12px;
-  cursor: pointer;
+  z-index: 10;
   display: none;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
 }
 
-.bookmark-item:hover .bookmark-delete {
+.bookmark-item:hover .bookmark-menu {
+  display: block;
+}
+
+.bookmark-menu-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--text-secondary);
+  cursor: pointer;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.bookmark-menu-btn:hover {
+  background: var(--glass-hover);
+  color: var(--text-primary);
+}
+
+.bookmark-dropdown {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  min-width: 130px;
+  background: #ffffff;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  display: none;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+[data-theme="dark"] .bookmark-dropdown {
+  background: #1e1e2e;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.bookmark-dropdown.open {
+  display: block;
+}
+
+.bookmark-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+  transition: var(--transition);
+}
+
+.bookmark-dropdown-item:hover {
+  background: var(--glass-hover);
+  color: var(--text-primary);
+}
+
+.bookmark-dropdown-danger {
+  color: var(--danger);
+}
+
+.bookmark-dropdown-danger:hover {
+  background: rgba(255,71,87,0.1);
+  color: var(--danger);
 }
 
 /* Right Panels */
