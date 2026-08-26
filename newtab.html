@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BakungKron</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-animation">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="container">
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div class="greeting" id="greeting"></div>
+      <div class="top-actions">
+        <button class="icon-btn" id="toggleTheme" title="Toggle Theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+        <button class="icon-btn" id="refreshBg" title="Change Background">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+        </button>
+        <button class="icon-btn" id="openSettings" title="Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-box">
+        <div class="search-engine-selector" id="searchEngineSelector">
+          <img id="searchEngineIcon" src="" alt="engine" class="engine-icon">
+          <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="search-engine-dropdown" id="searchEngineDropdown"></div>
+        <input type="text" id="searchInput" placeholder="Search or enter URL..." autocomplete="off">
+        <div class="search-history-dropdown" id="searchHistoryList"></div>
+        <button class="search-btn" id="searchBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Left Panel: Bookmarks -->
+      <section class="panel bookmarks-panel">
+        <div class="panel-header">
+          <h2>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            Bookmarks
+          </h2>
+          <div class="panel-actions">
+            <button class="icon-btn-sm" id="addFolderBtn" title="New Folder">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><path d="M12 11v6M9 14h6"/></svg>
+            </button>
+            <button class="icon-btn-sm" id="addBookmarkBtn" title="Add Bookmark">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="bookmark-breadcrumb" id="bookmarkBreadcrumb"></div>
+        <div class="bookmarks-grid" id="bookmarksGrid"></div>
+      </section>
+
+      <!-- Right Panel: History + Shortcuts -->
+      <div class="right-panels">
+        <!-- Shortcuts -->
+        <section class="panel shortcuts-panel">
+          <div class="panel-header">
+            <h2>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              Shortcuts
+            </h2>
+            <button class="icon-btn-sm" id="addShortcutBtn" title="Add Shortcut">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+          <div class="shortcuts-list" id="shortcutsList"></div>
+        </section>
+
+        <!-- History -->
+        <section class="panel history-panel">
+          <div class="panel-header">
+            <h2>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              Recent History
+            </h2>
+            <button class="icon-btn-sm" id="clearHistoryBtn" title="Clear History">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+          </div>
+          <div class="history-list" id="historyList"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal: Add Bookmark -->
+  <div class="modal-overlay" id="bookmarkModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Bookmark</h3>
+        <button class="modal-close" data-close="bookmarkModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label>Name</label>
+        <input type="text" id="bookmarkName" placeholder="Site Name">
+        <label>URL</label>
+        <input type="url" id="bookmarkUrl" placeholder="https://example.com">
+        <label>Icon (optional)</label>
+        <input type="text" id="bookmarkIcon" placeholder="Emoji or icon URL">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="bookmarkModal">Cancel</button>
+        <button class="btn btn-primary" id="saveBookmarkBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Create Folder -->
+  <div class="modal-overlay" id="folderModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>New Folder</h3>
+        <button class="modal-close" data-close="folderModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label>Folder Name</label>
+        <input type="text" id="folderName" placeholder="Folder Name">
+        <label>Parent</label>
+        <select id="folderParent" class="folder-select"></select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="folderModal">Cancel</button>
+        <button class="btn btn-primary" id="saveFolderBtn">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Shortcut -->
+  <div class="modal-overlay" id="shortcutModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Shortcut</h3>
+        <button class="modal-close" data-close="shortcutModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label>Title</label>
+        <input type="text" id="shortcutTitle" placeholder="Shortcut Title">
+        <label>URL</label>
+        <input type="url" id="shortcutUrl" placeholder="https://example.com/...">
+        <label>Color</label>
+        <div class="color-picker" id="shortcutColorPicker">
+          <span class="color-opt selected" data-color="#6c5ce7" style="background:#6c5ce7"></span>
+          <span class="color-opt" data-color="#00b894" style="background:#00b894"></span>
+          <span class="color-opt" data-color="#fd79a8" style="background:#fd79a8"></span>
+          <span class="color-opt" data-color="#fdcb6e" style="background:#fdcb6e"></span>
+          <span class="color-opt" data-color="#0984e3" style="background:#0984e3"></span>
+          <span class="color-opt" data-color="#e17055" style="background:#e17055"></span>
+          <span class="color-opt" data-color="#00cec9" style="background:#00cec9"></span>
+          <span class="color-opt" data-color="#636e72" style="background:#636e72"></span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="shortcutModal">Cancel</button>
+        <button class="btn btn-primary" id="saveShortcutBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <div class="settings-overlay" id="settingsOverlay">
+    <div class="settings-panel">
+      <div class="settings-header">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </h3>
+        <button class="modal-close" id="closeSettings">&times;</button>
+      </div>
+
+      <!-- Appearance -->
+      <div class="settings-section">
+        <div class="settings-section-title">Appearance</div>
+
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Dark Mode</div>
+            <div class="setting-desc">Toggle between dark and light theme</div>
+          </div>
+          <div class="toggle" id="themeToggle"></div>
+        </div>
+      </div>
+
+      <!-- Accent Color -->
+      <div class="settings-section">
+        <div class="settings-section-title">Accent Color</div>
+        <div class="color-grid" id="accentColorPicker">
+          <span class="color-opt selected" data-color="#6c5ce7" style="background:#6c5ce7"></span>
+          <span class="color-opt" data-color="#00b894" style="background:#00b894"></span>
+          <span class="color-opt" data-color="#fd79a8" style="background:#fd79a8"></span>
+          <span class="color-opt" data-color="#fdcb6e" style="background:#fdcb6e"></span>
+          <span class="color-opt" data-color="#0984e3" style="background:#0984e3"></span>
+          <span class="color-opt" data-color="#e17055" style="background:#e17055"></span>
+          <span class="color-opt" data-color="#00cec9" style="background:#00cec9"></span>
+          <span class="color-opt" data-color="#ff6b6b" style="background:#ff6b6b"></span>
+          <span class="color-opt" data-color="#a29bfe" style="background:#a29bfe"></span>
+          <span class="color-opt" data-color="#55efc4" style="background:#55efc4"></span>
+        </div>
+      </div>
+
+      <!-- Background -->
+      <div class="settings-section">
+        <div class="settings-section-title">Background</div>
+        <div class="bg-preview-grid" id="bgPicker">
+          <div class="bg-option gradient-1 selected" data-bg="gradient-1">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-2" data-bg="gradient-2">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-3" data-bg="gradient-3">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-4" data-bg="gradient-4">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-5" data-bg="gradient-5">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-6" data-bg="gradient-6">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-7" data-bg="gradient-7">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-8" data-bg="gradient-8">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-9" data-bg="gradient-9">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-10" data-bg="gradient-10">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-11" data-bg="gradient-11">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-12" data-bg="gradient-12">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-13" data-bg="gradient-13">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-14" data-bg="gradient-14">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-15" data-bg="gradient-15">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option gradient-16" data-bg="gradient-16">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option img-option" id="bgUploadBtn" data-bg="custom-image">
+            + Upload Image
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+          <div class="bg-option" data-bg="none" style="background: var(--bg-primary); border: 1px dashed var(--glass-border);">
+            <div class="bg-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+          </div>
+        </div>
+        <input type="file" id="bgImageUpload" accept="image/*">
+      </div>
+
+      <div class="settings-footer">
+        <button class="btn btn-primary" id="saveSettings">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-brand">BakungKron</span>
+      <span class="footer-sep">&middot;</span>
+      <a href="https://github.com/kikukeii" target="_blank" class="footer-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        kikukeii
+      </a>
+      <span class="footer-sep">&middot;</span>
+      <a href="https://github.com/kikukeii/BakungKron-extension" target="_blank" class="footer-link footer-contribute">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 12h18"/></svg>
+        Fork &amp; Contribute
+      </a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      browsers:
+        description: 'Browsers to build (comma separated)'
+        required: false
+        default: 'chrome,firefox,edge,opera,brave'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set browser list
+        id: browsers
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            BROWSERS="${{ github.event.inputs.browsers }}"
+          else
+            BROWSERS="chrome,firefox,edge,opera,brave"
+          fi
+          echo "list=$BROWSERS" >> $GITHUB_OUTPUT
+
+      - name: Build Chrome
+        if: contains(steps.browsers.outputs.list, 'chrome')
+        run: |
+          mkdir -p dist/chrome
+          cp manifest.json newtab.html script.js styles.css dist/chrome/
+          cp -r icons dist/chrome/
+          cd dist/chrome && zip -r ../../BakungKron-chrome.zip . && cd ../..
+
+      - name: Build Firefox
+        if: contains(steps.browsers.outputs.list, 'firefox')
+        run: |
+          mkdir -p dist/firefox/icons
+          cp newtab.html script.js styles.css dist/firefox/
+          cp icons/*.png dist/firefox/icons/
+          cat > dist/firefox/manifest.json << 'EOF'
+          {
+            "manifest_version": 2,
+            "name": "BakungKron",
+            "version": "1.0.0",
+            "description": "Beautiful modern new tab page with bookmarks grid, history, shortcuts, and search engine selector",
+            "chrome_url_overrides": {
+              "newtab": "newtab.html"
+            },
+            "permissions": [
+              "bookmarks",
+              "history",
+              "storage",
+              "https://suggestqueries.google.com/*",
+              "https://api.bing.com/*",
+              "https://duckduckgo.com/*",
+              "https://en.wikipedia.org/*",
+              "https://completion.amazon.com/*"
+            ],
+            "icons": {
+              "16": "icons/icon16.png",
+              "48": "icons/icon48.png",
+              "128": "icons/icon128.png"
+            }
+          }
+          EOF
+          cd dist/firefox && zip -r ../../BakungKron-firefox.zip . && cd ../..
+
+      - name: Build Edge
+        if: contains(steps.browsers.outputs.list, 'edge')
+        run: |
+          mkdir -p dist/edge
+          cp manifest.json newtab.html script.js styles.css dist/edge/
+          cp -r icons dist/edge/
+          cd dist/edge && zip -r ../../BakungKron-edge.zip . && cd ../..
+
+      - name: Build Opera
+        if: contains(steps.browsers.outputs.list, 'opera')
+        run: |
+          mkdir -p dist/opera
+          cp manifest.json newtab.html script.js styles.css dist/opera/
+          cp -r icons dist/opera/
+          cd dist/opera && zip -r ../../BakungKron-opera.zip . && cd ../..
+
+      - name: Build Brave
+        if: contains(steps.browsers.outputs.list, 'brave')
+        run: |
+          mkdir -p dist/brave
+          cp manifest.json newtab.html script.js styles.css dist/brave/
+          cp -r icons dist/brave/
+          cd dist/brave && zip -r ../../BakungKron-brave.zip . && cd ../..
+
+      - name: Generate Release Notes
+        if: startsWith(github.ref, 'refs/tags/')
+        id: notes
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          PREV_TAG=$(git tag --sort=-creatordate | head -2 | tail -1)
+
+          if [ "$PREV_TAG" = "$TAG" ] || [ -z "$PREV_TAG" ]; then
+            COMMITS=$(git log --pretty=format:"- %s (%an)" HEAD)
+          else
+            COMMITS=$(git log --pretty=format:"- %s (%an)" ${PREV_TAG}..${TAG})
+          fi
+
+          CONTRIBUTORS=$(git log --pretty=format:"%an" ${PREV_TAG:-HEAD}..${TAG} | sort -u)
+
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "## What's Changed" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "$COMMITS" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "## Contributors" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "$CONTRIBUTORS" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "---" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "## Install" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "### Chrome / Edge / Brave" >> $GITHUB_OUTPUT
+          echo "1. Download \`BakungKron-chrome.zip\`" >> $GITHUB_OUTPUT
+          echo "2. Extract the zip" >> $GITHUB_OUTPUT
+          echo "3. Open \`chrome://extensions/\`" >> $GITHUB_OUTPUT
+          echo "4. Enable **Developer mode**" >> $GITHUB_OUTPUT
+          echo "5. Click **Load unpacked** → select the folder" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "### Firefox" >> $GITHUB_OUTPUT
+          echo "1. Download \`BakungKron-firefox.zip\`" >> $GITHUB_OUTPUT
+          echo "2. Extract the zip" >> $GITHUB_OUTPUT
+          echo "3. Open \`about:debugging#/runtime/this-firefox\`" >> $GITHUB_OUTPUT
+          echo "4. Click **Load Temporary Add-on** → select any file in the folder" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "### Opera" >> $GITHUB_OUTPUT
+          echo "1. Download \`BakungKron-opera.zip\`" >> $GITHUB_OUTPUT
+          echo "2. Extract the zip" >> $GITHUB_OUTPUT
+          echo "3. Open \`opera://extensions/\`" >> $GITHUB_OUTPUT
+          echo "4. Enable **Developer mode**" >> $GITHUB_OUTPUT
+          echo "5. Click **Load unpacked** → select the folder" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ steps.notes.outputs.changelog }}
+          files: |
+            BakungKron-chrome.zip
+            BakungKron-firefox.zip
+            BakungKron-edge.zip
+            BakungKron-opera.zip
+            BakungKron-brave.zip
